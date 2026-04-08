@@ -55,21 +55,25 @@ export async function analyzeStress(answers) {
   const { total_score, helplessness_score, helplessness_level, efficacy_score, efficacy_level, archetype } =
     psychometricScore(answers);
 
-  const prompt = `You are an elite organizational psychologist advising Fortune 500 executives.
-Analyze this IT executive's psychometric data:
+  const prompt = `You are an elite organizational psychologist and cognitive performance advisor to Fortune 500 CEOs and CTOs.
+Analyze the psychometric data for this IT executive.
 Total Score: ${total_score}/40
+
+Psychological profile:
 - Perceived Helplessness: ${helplessness_level} (${helplessness_score}/24)
 - Perceived Self-Efficacy: ${efficacy_level} (${efficacy_score}/16)
 - Executive Archetype: ${archetype}
-Raw PSS Answers (0=Never, 4=Very Often): ${answers.join(", ")}
+Raw PSS Answers: ${answers.join(", ")}.
 
-Output exactly 3 short, boardroom-ready insights about their current state.
+Based strictly on this data, output exactly 3 highly sophisticated, boardroom-ready insights regarding their current operational bandwidth and leadership posture.
 
-RULES:
-- Max 10 words per insight.
-- Tone: analytical, authoritative, peer-to-peer.
-- Address as "You".
-- Output ONLY the 3 numbered facts, nothing else.`;
+STRICT RULES:
+1. Length: Absolute maximum of 8-12 words per insight.
+2. Tone: Analytical, authoritative, discreet, and peer-to-peer.
+3. FORBIDDEN WORDS (Do NOT use): "stress", "tired", "self-care", "wellness", "feelings", "take a break", "burnout", "overwhelmed".
+4. PREFERRED CONCEPTS: Use terms like "cognitive bandwidth", "operational friction", "executive function", "systemic resilience", "decision fatigue", "strategic detachment", or "tactical depletion".
+5. Address the executive directly as "You".
+6. Output ONLY the 3 numbered facts.`;
 
   try {
     const text = await analyzeStressWithRetry(prompt);
