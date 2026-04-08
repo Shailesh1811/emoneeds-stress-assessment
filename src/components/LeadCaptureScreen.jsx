@@ -8,6 +8,8 @@ const LeadCaptureScreen = ({ onSubmit, onBack }) => {
   const [phone, setPhone] = useState("");
   const [errors, setErrors] = useState({});
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const validate = () => {
     const newErrors = {};
     if (!name.trim()) newErrors.name = "Please enter your name";
@@ -18,12 +20,14 @@ const LeadCaptureScreen = ({ onSubmit, onBack }) => {
   };
 
   const handleSubmit = () => {
+    if (isSubmitting) return;
     if (validate()) {
+      setIsSubmitting(true);
       onSubmit({ name: name.trim(), email: email.trim(), phone: phone.trim() || undefined });
     }
   };
 
-  const inputClass = "h-[60px] w-full rounded-lg border border-input bg-card pl-12 pr-4 text-lg text-foreground outline-none transition-all duration-400 placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-ring/20";
+  const inputClass = "h-[60px] w-full rounded-lg border border-input bg-card pl-12 pr-4 text-lg text-foreground outline-none transition-all duration-300 placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-ring/20";
 
   return (
     <div className="flex h-screen flex-col items-center justify-between bg-background px-8 py-12 md:py-20">

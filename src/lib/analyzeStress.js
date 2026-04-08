@@ -1,6 +1,6 @@
 import Groq from "groq-sdk";
 
-const REVERSE_INDICES = [3, 4, 6, 7]; // Questions 4, 5, 7, 8 (0-indexed)
+const REVERSE_INDICES = [3, 4, 6, 7];
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -41,7 +41,7 @@ async function analyzeStressWithRetry(prompt, maxRetries = 3) {
       return completion.choices[0]?.message?.content || "";
     } catch (error) {
       if (error.message?.includes("503") || error.status === 503) {
-        console.warn(`Attempt ${i + 1} failed due to high demand. Retrying in ${i + 1}s...`);
+        console.warn(`Attempt ${i + 1} failed. Retrying in ${i + 1}s...`);
         await delay((i + 1) * 1000);
       } else {
         throw error;
@@ -52,34 +52,24 @@ async function analyzeStressWithRetry(prompt, maxRetries = 3) {
 }
 
 export async function analyzeStress(answers) {
-  const {
-    total_score,
-    helplessness_score,
-    helplessness_level,
-    efficacy_score,
-    efficacy_level,
-    archetype,
-  } = psychometricScore(answers);
+  const { total_score, helplessness_score, helplessness_level, efficacy_score, efficacy_level, archetype } =
+    psychometricScore(answers);
 
-  const prompt = `You are an elite organizational psychologist and cognitive performance advisor to Fortune 500 CEOs and CTOs.
-Analyze the psychometric data for this IT executive.
+  const prompt = `You are an elite organizational psychologist advising Fortune 500 executives.
+Analyze this IT executive's psychometric data:
 Total Score: ${total_score}/40
-
-Psychological profile:
 - Perceived Helplessness: ${helplessness_level} (${helplessness_score}/24)
 - Perceived Self-Efficacy: ${efficacy_level} (${efficacy_score}/16)
 - Executive Archetype: ${archetype}
-Raw PSS Answers: ${answers.join(", ")}.
+Raw PSS Answers (0=Never, 4=Very Often): ${answers.join(", ")}
 
-Based strictly on this data, output exactly 3 highly sophisticated, boardroom-ready insights regarding their current operational bandwidth and leadership posture.
+Output exactly 3 short, boardroom-ready insights about their current state.
 
-STRICT RULES:
-1. Length: Absolute maximum of 8-12 words per insight.
-2. Tone: Analytical, authoritative, discreet, and peer-to-peer.
-3. FORBIDDEN WORDS (Do NOT use): "stress", "tired", "self-care", "wellness", "feelings", "take a break", "burnout", "overwhelmed". 
-4. PREFERRED CONCEPTS: Use terms like "cognitive bandwidth", "operational friction", "executive function", "systemic resilience", "decision fatigue", "strategic detachment", or "tactical depletion".
-5. Address the executive directly as "You".
-6. Output ONLY the 3 numbered facts.`;
+RULES:
+- Max 10 words per insight.
+- Tone: analytical, authoritative, peer-to-peer.
+- Address as "You".
+- Output ONLY the 3 numbered facts, nothing else.`;
 
   try {
     const text = await analyzeStressWithRetry(prompt);
@@ -92,14 +82,9 @@ STRICT RULES:
       .filter((line) => line.length > 0)
       .slice(0, 3);
 
-    console.log("AI raw text:", text);
-    console.log("AI parsed facts:", ai_facts);
     return { score: total_score, archetype, ai_facts };
   } catch (err) {
-    const statusCode = err.status || err.code || "UNKNOWN";
-    console.error(`Groq API Error [${statusCode}]:`, err.message);
-    if (statusCode === 401) console.error("Error 401: Invalid API Key. Check VITE_GROQ_API_KEY.");
-    if (statusCode === 429) console.error("Error 429: Rate limit exceeded.");
-    throw new Error(`AI analysis failed: ${err.message} (Code: ${statusCode})`);
+    console.error("Groq API Error:", err.message);
+    throw new Error(`AI analysis failed: ${err.message}`);
   }
 }

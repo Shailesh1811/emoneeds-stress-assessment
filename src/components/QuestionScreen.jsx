@@ -6,22 +6,27 @@ import { ArrowLeft } from "lucide-react";
 const QuestionScreen = ({ onComplete, onBack }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState(new Array(questions.length).fill(null));
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
-  const question = questions[currentIndex];
+  const question = questions[currentIndex] || questions[questions.length - 1];
   const progress = ((currentIndex + 1) / questions.length) * 100;
   const selectedAnswer = answers[currentIndex];
-  const isLast = currentIndex === questions.length - 1;
+  const isLast = currentIndex >= questions.length - 1;
 
   const handleSelect = (value) => {
+    if (isTransitioning) return;
+    
     const newAnswers = [...answers];
     newAnswers[currentIndex] = value;
     setAnswers(newAnswers);
+    setIsTransitioning(true);
 
     setTimeout(() => {
       if (isLast) {
         onComplete(newAnswers);
       } else {
         setCurrentIndex((i) => i + 1);
+        setIsTransitioning(false);
       }
     }, 400);
   };

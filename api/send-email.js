@@ -11,15 +11,18 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Missing required fields (email, pdfBase64)" });
   }
 
+  if (!process.env.RESEND_API_KEY) {
+    console.error("RESEND_API_KEY is not set in environment variables.");
+    return res.status(500).json({ error: "Email service not configured." });
+  }
+
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    // Ensure base64 string is stripped of data:application/pdf;base64, if present
-    const base64Data = pdfBase64.replace(/^data:application\/pdf;base64,/, "");
+    const base64Data = pdfBase64.includes("base64,") ? pdfBase64.split("base64,")[1] : pdfBase64;
 
-    // Send the email with the PDF attached
     const result = await resend.emails.send({
-      from: "Emoneeds <noreply@emoneeds.com>", // Default verified domain required by Resend, or use user's custom domain
+      from: "Emoneeds <reports@mail.emoneeds.com>",
       to: email,
       subject: "Your Personalized Stress Assessment Report",
       html: `
@@ -32,19 +35,19 @@ export default async function handler(req, res) {
       attachments: [
         {
           filename: "Stress_Assessment_Report.pdf",
-          content: base64Data,
+          content: Buffer.from(base64Data, "base64"),
         },
       ],
     });
 
     if (result.error) {
-      console.error("Resend API error:", result.error);
-      return res.status(400).json({ error: result.error });
+      console.error("Resend API error detail:", JSON.stringify(result.error));
+      return res.status(400).json({ error: result.error.message || JSON.stringify(result.error) });
     }
 
     return res.status(200).json({ success: true, id: result.data.id });
   } catch (error) {
-    console.error("Failed to send email:", error);
-    return res.status(500).json({ error: "Failed to send email" });
+    console.error("Failed to send email:", error.message);
+    return res.status(500).json({ error: error.message || "Failed to send email" });
   }
 }

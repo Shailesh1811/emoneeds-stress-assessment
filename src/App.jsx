@@ -22,6 +22,7 @@ const App = () => {
   const [userInfo, setUserInfo] = useState(null);
 
   const pdfRef = useRef(null);
+  const hasDispatchedEmailRef = useRef(false);
 
   const handleStart = () => setScreen("stats");
 
@@ -39,6 +40,7 @@ const App = () => {
       setAiLoading(true);
       setAiFacts(null);
       setArchetype(null);
+      hasDispatchedEmailRef.current = false;
       setScreen("results");
 
       // Build per-question answers in Q1-a3 format
@@ -78,9 +80,14 @@ const App = () => {
 
   // Generate and send PDF in background once AI finishes and facts exist
   useEffect(() => {
-    if (!aiLoading && aiFacts && aiFacts.length > 0 && userInfo?.email && pdfRef.current) {
+    if (!aiLoading && aiFacts && aiFacts.length > 0 && userInfo?.email && pdfRef.current && !hasDispatchedEmailRef.current) {
+      hasDispatchedEmailRef.current = true;
+      
       const generateAndSendPdf = async () => {
         try {
+          // Wait 200ms to ensure React fully flushes the text and DOM has painted
+          await new Promise(resolve => setTimeout(resolve, 200));
+          
           const canvas = await html2canvas(pdfRef.current, { scale: 2 });
           const imgData = canvas.toDataURL("image/jpeg", 0.9);
           const pdf = new jsPDF("p", "pt", "a4");
@@ -101,6 +108,7 @@ const App = () => {
           });
         } catch (err) {
           console.error("Failed to generate and send PDF:", err);
+          hasDispatchedEmailRef.current = false; // allow retry on total failure
         }
       };
 

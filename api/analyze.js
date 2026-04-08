@@ -1,7 +1,8 @@
-const { ChatGoogleGenerativeAI } = require("@langchain/google-genai");
-const { PromptTemplate } = require("@langchain/core/prompts");
+import Groq from "groq-sdk";
 
-const REVERSE_INDICES = [3, 4, 6, 7];
+const REVERSE_INDICES = [3, 4, 6, 7]; // Questions 4, 5, 7, 8
+
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 function psychometricScore(answers) {
   const total_score = answers.reduce((sum, val, i) => {
@@ -23,25 +24,7 @@ function psychometricScore(answers) {
   return { total_score, helplessness_score, helplessness_level, efficacy_score, efficacy_level, archetype };
 }
 
-const PROMPT_TEMPLATE = `You are an insightful and elegant wellness consultant analyzing a tech CEO's stress assessment.
-Their total score is {total_score}/40.
-
-Psychological profile:
-- Perceived Helplessness: {helplessness_level} ({helplessness_score}/24)
-- Perceived Self-Efficacy: {efficacy_level} ({efficacy_score}/16)
-- Executive Archetype: {archetype}
-
-Their raw answers (0=Never to 4=Very Often) to the 10 PSS questions are: {answers}.
-
-Based on this data, output exactly 3 short, elegant behavioral facts about their current state.
-
-Rules:
-- Maximum 8-10 words per fact.
-- Use clear, professional, and empathetic language suitable for a C-suite executive.
-- Address the user directly as "You".
-- Output ONLY the numbered list.`;
-
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -52,6 +35,17 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: "Invalid answers: expected array of 10 integers" });
   }
 
+  // NOTE: In production, ensure VITE_GROQ_API_KEY is properly set in Vercel. 
+  // We check for GROQ_API_KEY as standard, falling back to VITE_GROQ_API_KEY if that's what user has.
+  const apiKey = process.env.GROQ_API_KEY || process.env.VITE_GROQ_API_KEY;
+  
+  if (!apiKey) {
+    console.error("GROQ_API_KEY is missing from environment variables.");
+    return res.status(500).json({ error: "Server API configuration error." });
+  }
+
+  const groq = new Groq({ apiKey });
+
   const {
     total_score,
     helplessness_score,
@@ -61,46 +55,68 @@ module.exports = async function handler(req, res) {
     archetype,
   } = psychometricScore(answers);
 
+  const prompt = `You are an elite organizational psychologist and cognitive performance advisor to Fortune 500 CEOs and CTOs.
+Analyze the psychometric data for this IT executive.
+Total Score: ${total_score}/40
+
+Psychological profile:
+- Perceived Helplessness: ${helplessness_level} (${helplessness_score}/24)
+- Perceived Self-Efficacy: ${efficacy_level} (${efficacy_score}/16)
+- Executive Archetype: ${archetype}
+Raw PSS Answers: ${answers.join(", ")}.
+
+Based strictly on this data, output exactly 3 highly sophisticated, boardroom-ready insights regarding their current operational bandwidth and leadership posture.
+
+STRICT RULES:
+1. Length: Absolute maximum of 8-12 words per insight.
+2. Tone: Analytical, authoritative, discreet, and peer-to-peer.
+3. FORBIDDEN WORDS (Do NOT use): "stress", "tired", "self-care", "wellness", "feelings", "take a break", "burnout", "overwhelmed". 
+4. PREFERRED CONCEPTS: Use terms like "cognitive bandwidth", "operational friction", "executive function", "systemic resilience", "decision fatigue", "strategic detachment", or "tactical depletion".
+5. Address the executive directly as "You".
+6. Output ONLY the 3 numbered facts.`;
+
   try {
-    const llm = new ChatGoogleGenerativeAI({
-      apiKey: process.env.GOOGLE_API_KEY,
-      modelName: "gemini-2.0-flash", // Updated model name for better compatibility
-      temperature: 0.7,
-    });
+    let aiText = "";
+    const maxRetries = 3;
+    
+    for (let i = 0; i < maxRetries; i++) {
+      try {
+        const completion = await groq.chat.completions.create({
+          model: "llama-3.3-70b-versatile",
+          messages: [{ role: "user", content: prompt }],
+          temperature: 0.7,
+          max_tokens: 300,
+        });
+        aiText = completion.choices[0]?.message?.content || "";
+        break;
+      } catch (error) {
+        if (error.message?.includes("503") || error.status === 503 || error.status === 429) {
+          console.warn(`Attempt ${i + 1} failed due to capacity. Retrying in ${i + 1}s...`);
+          await delay((i + 1) * 1000);
+          if (i === maxRetries - 1) throw error;
+        } else {
+          throw error;
+        }
+      }
+    }
 
-    const prompt = PromptTemplate.fromTemplate(PROMPT_TEMPLATE);
-    const chain = prompt.pipe(llm);
-
-    const result = await chain.invoke({
-      total_score,
-      helplessness_level,
-      helplessness_score,
-      efficacy_level,
-      efficacy_score,
-      archetype,
-      answers: answers.join(", "),
-    });
-
-    const ai_facts = result.content
+    const ai_facts = aiText
       .split("\n")
-      .filter((line) => /^\d+\./.test(line.trim()))
-      .map((line) => line.replace(/^\d+\.\s*/, "").trim())
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0)
+      .map((line) => line.replace(/^\*{0,2}\d+\.\*{0,2}\s*\*{0,2}/, "").replace(/\*+/g, "").trim())
+      .filter((line) => line.length > 0)
       .slice(0, 3);
 
     return res.status(200).json({ score: total_score, archetype, ai_facts });
   } catch (err) {
     const statusCode = err.status || err.code || 500;
-    console.error(`Gemini API Error [${statusCode}]:`, err.message);
+    console.error(`Groq API Error [${statusCode}]:`, err.message);
     
-    // Explicit hints for common errors
-    if (statusCode === 403) console.error("Error 403: API Key issue or model access restricted.");
-    if (statusCode === 429) console.error("Error 429: Rate limit exceeded (Free tier quota).");
-    if (statusCode === 404) console.error("Error 404: Model name not found.");
-
     return res.status(statusCode).json({ 
       error: "AI analysis failed", 
       errorCode: statusCode,
       detail: err.message 
     });
   }
-};
+}
