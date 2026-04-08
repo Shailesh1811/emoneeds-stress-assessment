@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { questions, answerOptions } from "../lib/assessment-data.js";
 import { Button } from "./Button.jsx";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 const QuestionScreen = ({ onComplete, onBack }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -16,15 +16,14 @@ const QuestionScreen = ({ onComplete, onBack }) => {
     const newAnswers = [...answers];
     newAnswers[currentIndex] = value;
     setAnswers(newAnswers);
-  };
 
-  const handleNext = () => {
-    if (selectedAnswer === null) return;
-    if (isLast) {
-      onComplete(answers);
-    } else {
-      setCurrentIndex((i) => i + 1);
-    }
+    setTimeout(() => {
+      if (isLast) {
+        onComplete(newAnswers);
+      } else {
+        setCurrentIndex((i) => i + 1);
+      }
+    }, 400);
   };
 
   const handlePrev = () => {
@@ -32,58 +31,58 @@ const QuestionScreen = ({ onComplete, onBack }) => {
   };
 
   return (
-    <div className="flex h-screen flex-col bg-background">
-      <div className="px-16 pt-8">
-        <div className="flex justify-center mb-4">
-          <img src="/emoneeds-logo.png" alt="emoneeds" className="h-8 w-auto" />
+    <div className="flex h-screen flex-col bg-background justify-between">
+      {/* Top Header */}
+      <div className="w-full px-8 md:px-16 pt-8 md:pt-12 shrink-0">
+        <div className="flex justify-center mb-6 md:mb-8">
+          <img src="/emoneeds-logo.png" alt="emoneeds" className="h-10 md:h-14 w-auto drop-shadow-xl" />
         </div>
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-semibold text-muted-foreground font-secondary">
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-sm md:text-base font-semibold text-muted-foreground font-secondary">
             Question {currentIndex + 1} of {questions.length}
           </span>
-          <span className="rounded-full bg-primary-light px-3 py-1 text-xs font-semibold text-primary-dark font-secondary">
+          <span className="rounded-full bg-primary-light px-4 py-1.5 text-xs md:text-sm font-semibold text-primary-dark font-secondary">
             {question.category}
           </span>
         </div>
-        <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-          <div className="h-full rounded-full bg-primary transition-all duration-[400ms] ease-in-out" style={{ width: `${progress}%` }} />
+        <div className="h-2 md:h-3 w-full overflow-hidden rounded-full bg-muted">
+          <div className="h-full rounded-full bg-primary transition-all duration-500 ease-out" style={{ width: `${progress}%` }} />
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col items-center justify-center px-16" key={currentIndex}>
-        <div className="w-full max-w-2xl animate-fade-in">
-          <h2 className="mb-10 text-center text-3xl font-bold text-foreground leading-tight">
+      {/* Middle Question Area */}
+      <div className="flex flex-1 flex-col items-center justify-center px-6 md:px-16 overflow-y-auto" key={currentIndex}>
+        <div className="w-full max-w-3xl animate-fade-in my-auto py-8">
+          <h2 className="mb-10 md:mb-14 text-center text-3xl md:text-4xl font-extrabold text-foreground leading-snug">
             {question.text}
           </h2>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-4 md:gap-5">
             {answerOptions.map((option) => (
               <button
                 key={option.value}
                 onClick={() => handleSelect(option.value)}
-                className={`flex h-[64px] w-full items-center rounded-xl border-2 px-6 text-lg font-medium transition-all duration-[400ms] ${
+                className={`flex h-[72px] md:h-[84px] w-full items-center rounded-2xl border-2 px-6 md:px-8 text-xl font-bold transition-all duration-300 ${
                   selectedAnswer === option.value
-                    ? "border-primary bg-primary-light text-primary-dark shadow-card"
-                    : "border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent"
+                    ? "border-primary bg-primary-light text-primary-dark shadow-card scale-[1.02]"
+                    : "border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent hover:scale-[1.01]"
                 }`}
               >
-                <span className={`mr-4 flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${
+                <span className={`mr-6 flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full text-base md:text-lg font-black shrink-0 ${
                   selectedAnswer === option.value ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
                 }`}>
                   {option.value + 1}
                 </span>
-                {option.label}
+                <span className="text-left leading-tight">{option.label}</span>
               </button>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="flex items-center justify-between px-16 pb-8">
-        <Button variant="outline" size="sm" onClick={handlePrev} className="gap-2">
-          <ArrowLeft /> Back
-        </Button>
-        <Button size="default" onClick={handleNext} disabled={selectedAnswer === null} className="gap-2">
-          {isLast ? "See Results" : "Next"} <ArrowRight />
+      {/* Bottom Footer Area */}
+      <div className="w-full flex items-center px-8 md:px-16 pb-8 md:pb-12 shrink-0">
+        <Button variant="outline" size="lg" onClick={handlePrev} className="gap-3 h-14 md:h-16 px-6 md:px-8 text-lg font-semibold rounded-2xl border-2">
+          <ArrowLeft className="w-6 h-6" /> Back
         </Button>
       </div>
     </div>

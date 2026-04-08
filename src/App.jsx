@@ -1,68 +1,161 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import WelcomeScreen from "./components/WelcomeScreen.jsx";
+import StatsScreen from "./components/StatsScreen.jsx";
 import LeadCaptureScreen from "./components/LeadCaptureScreen.jsx";
 import QuestionScreen from "./components/QuestionScreen.jsx";
 import ResultsScreen from "./components/ResultsScreen.jsx";
+import FactsScreen from "./components/FactsScreen.jsx";
+import PdfReport from "./components/PdfReport.jsx";
 import { calculateStressLevel, questions } from "./lib/assessment-data.js";
 import { supabase } from "./lib/supabaseClient.js";
+import { analyzeStress } from "./lib/analyzeStress.js";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 
 const App = () => {
   const [screen, setScreen] = useState("welcome");
-  const [leadData, setLeadData] = useState(null);
+  const [pendingAnswers, setPendingAnswers] = useState(null);
   const [totalScore, setTotalScore] = useState(0);
+  const [aiFacts, setAiFacts] = useState(null);
+  const [archetype, setArchetype] = useState(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
 
-  const handleStart = () => setScreen("lead");
+  const pdfRef = useRef(null);
 
-  const handleLeadSubmit = (data) => {
-    setLeadData(data);
-    setScreen("questions");
-  };
+  const handleStart = () => setScreen("stats");
 
-  const handleAssessmentComplete = useCallback(
-    async (answers) => {
-      const score = answers.reduce((sum, a) => sum + a, 0);
+  const handleAssessmentComplete = useCallback((answers) => {
+    setPendingAnswers(answers);
+    setScreen("lead");
+  }, []);
+
+  const handleLeadSubmit = useCallback(
+    async (data) => {
+      setUserInfo({ name: data.name, email: data.email });
+      // Calculate score immediately — no need to wait for AI
+      const score = pendingAnswers.reduce((sum, a, i) => sum + ([3, 4, 6, 7].includes(i) ? 4 - a : a), 0);
       setTotalScore(score);
+      setAiLoading(true);
+      setAiFacts(null);
+      setArchetype(null);
       setScreen("results");
 
       // Build per-question answers in Q1-a3 format
       const answersDetail = {};
-      questions.map((q, i) => {
-        answersDetail[`Q${i + 1}`] = `a${answers[i]}`;
+      questions.forEach((q, i) => {
+        answersDetail[`Q${i + 1}`] = `a${pendingAnswers[i]}`;
       });
 
-      // Send to Supabase
-      if (supabase && leadData) {
-        try {
-          const { error } = await supabase.from("assessments").insert({
-            name: leadData.name,
-            email: leadData.email,
-            phone: leadData.phone || null,
-            score,
-            stress_level: calculateStressLevel(score),
-            answers: answersDetail,
-          });
-          if (error) console.error("Supabase insert error:", error.message);
-          else console.log("✅ Assessment saved to Supabase");
-        } catch (err) {
-          console.error("Supabase network error:", err);
-        }
+      // Call AI analysis and Supabase in parallel
+      const [aiResult] = await Promise.allSettled([
+        analyzeStress(pendingAnswers),
+
+        supabase
+          ? supabase.from("assessments").insert({
+              name: data.name,
+              email: data.email,
+              phone: data.phone || null,
+              score,
+              stress_level: calculateStressLevel(score),
+              answers: answersDetail,
+            })
+          : Promise.resolve(),
+      ]);
+
+      if (aiResult.status === "fulfilled" && aiResult.value?.score !== undefined) {
+        const { archetype: arc, ai_facts } = aiResult.value;
+        setArchetype(arc);
+        setAiFacts(ai_facts);
+      } else {
+        console.error("AI error:", aiResult.reason);
       }
+
+      setAiLoading(false);
     },
-    [leadData]
+    [pendingAnswers]
   );
+
+  // Generate and send PDF in background once AI finishes and facts exist
+  useEffect(() => {
+    if (!aiLoading && aiFacts && aiFacts.length > 0 && userInfo?.email && pdfRef.current) {
+      const generateAndSendPdf = async () => {
+        try {
+          const canvas = await html2canvas(pdfRef.current, { scale: 2 });
+          const imgData = canvas.toDataURL("image/jpeg", 0.9);
+          const pdf = new jsPDF("p", "pt", "a4");
+          const pdfWidth = pdf.internal.pageSize.getWidth();
+          const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+          pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
+          
+          const pdfBase64 = pdf.output("datauristring");
+
+          await fetch("/api/send-email", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name: userInfo.name,
+              email: userInfo.email,
+              pdfBase64: pdfBase64,
+            }),
+          });
+        } catch (err) {
+          console.error("Failed to generate and send PDF:", err);
+        }
+      };
+
+      generateAndSendPdf();
+    }
+  }, [aiLoading, aiFacts, userInfo]);
+
+  const handleViewFacts = useCallback(() => setScreen("facts"), []);
 
   const handleRestart = useCallback(() => {
     setScreen("welcome");
-    setLeadData(null);
+    setPendingAnswers(null);
     setTotalScore(0);
+    setAiFacts(null);
+    setArchetype(null);
+    setAiLoading(false);
+    setUserInfo(null);
   }, []);
 
   return (
     <div className="h-screen w-screen overflow-hidden">
       {screen === "welcome" && <WelcomeScreen onStart={handleStart} />}
-      {screen === "lead" && <LeadCaptureScreen onSubmit={handleLeadSubmit} onBack={() => setScreen("welcome")} />}
-      {screen === "questions" && <QuestionScreen onComplete={handleAssessmentComplete} onBack={() => setScreen("lead")} />}
-      {screen === "results" && <ResultsScreen score={totalScore} onRestart={handleRestart} />}
+      {screen === "stats" && <StatsScreen onNext={() => setScreen("questions")} />}
+      {screen === "questions" && <QuestionScreen onComplete={handleAssessmentComplete} onBack={() => setScreen("stats")} />}
+      {screen === "lead" && <LeadCaptureScreen onSubmit={handleLeadSubmit} onBack={() => setScreen("questions")} />}
+      {screen === "results" && (
+        <ResultsScreen
+          score={totalScore}
+          aiFacts={aiFacts}
+          archetype={archetype}
+          aiLoading={aiLoading}
+          onRestart={handleRestart}
+          onViewFacts={handleViewFacts}
+        />
+      )}
+      {screen === "facts" && (
+        <FactsScreen
+          aiFacts={aiFacts}
+          archetype={archetype}
+          aiLoading={aiLoading}
+          onRestart={handleRestart}
+        />
+      )}
+
+      {/* Invisible PDF Report Container */}
+      <div style={{ position: "absolute", left: "-9999px", top: "-9999px" }}>
+        {userInfo && (
+          <PdfReport 
+            ref={pdfRef} 
+            name={userInfo.name} 
+            score={totalScore} 
+            aiFacts={aiFacts} 
+          />
+        )}
+      </div>
     </div>
   );
 };
