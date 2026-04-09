@@ -74,11 +74,11 @@ const PdfReport = React.forwardRef(({ name, score, aiFacts }, ref) => {
           <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
             {aiFacts.map((fact, i) => (
               <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "20px" }}>
-                <span style={{ 
-                  display: "flex", alignItems: "center", justifyContent: "center", 
-                  width: "36px", height: "36px", 
-                  borderRadius: "50%", 
-                  backgroundColor: "#f3f4f6", 
+                <span style={{
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  width: "36px", height: "36px",
+                  borderRadius: "50%",
+                  backgroundColor: "#f3f4f6",
                   fontWeight: "800", fontSize: "16px", flexShrink: 0,
                   color: "#374151"
                 }}>{i + 1}</span>
@@ -98,7 +98,7 @@ const PdfReport = React.forwardRef(({ name, score, aiFacts }, ref) => {
         </p>
 
         <p style={{ fontSize: "14px", color: "#9ca3af", fontStyle: "italic", lineHeight: "1.5" }}>
-        Disclaimer: Powered by Emoneeds. This automated brief reflects self-reported data intended for performance benchmarking, not clinical diagnosis.
+          Disclaimer: Powered by Emoneeds. This automated brief reflects self-reported data intended for performance benchmarking, not clinical diagnosis.
         </p>
       </div>
     </div>
