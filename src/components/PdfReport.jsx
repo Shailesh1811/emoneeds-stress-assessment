@@ -31,6 +31,7 @@ const PdfReport = React.forwardRef(({ name, score, aiFacts }, ref) => {
       }}
     >
       <div style={{ textAlign: "center", marginBottom: "50px" }}>
+        <img src="/emoneeds-logo.png" alt="emoneeds" style={{ height: "60px", width: "auto", marginBottom: "20px" }} />
         <h1 style={{ fontSize: "36px", fontWeight: "800", margin: "0 0 15px 0", color: "#111827" }}>Stress Assessment Report</h1>
         <h2 style={{ fontSize: "26px", fontWeight: "500", margin: "0", color: "#4b5563" }}>{name}</h2>
       </div>
