@@ -98,7 +98,7 @@ const PdfReport = React.forwardRef(({ name, score, aiFacts }, ref) => {
         </p>
 
         <p style={{ fontSize: "14px", color: "#9ca3af", fontStyle: "italic", lineHeight: "1.5" }}>
-        Disclaimer : Powered by Emoneeds. This automated brief reflects self-reported data intended for performance benchmarking, not clinical diagnosis.
+        Disclaimer: Powered by Emoneeds. This automated brief reflects self-reported data intended for performance benchmarking, not clinical diagnosis.
         </p>
       </div>
     </div>
