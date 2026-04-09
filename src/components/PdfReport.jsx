@@ -41,23 +41,26 @@ const PdfReport = React.forwardRef(({ name, score, aiFacts }, ref) => {
 
       {/* Circle & Stress Level */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "60px" }}>
-        <div 
+        <div
           style={{
-            width: "160px", height: "160px", 
-            borderRadius: "50%", 
-            border: `6px solid ${stressColor}`, 
+            width: "160px", height: "160px",
+            borderRadius: "50%",
+            border: `6px solid ${stressColor}`,
             display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",
-            marginBottom: "25px"
+            marginBottom: "25px",
+            gap: "0px"
           }}
         >
-          <span style={{ fontSize: "48px", fontWeight: "800", color: stressColor, lineHeight: "1" }}>{score}</span>
-          <span style={{ fontSize: "16px", color: "#6b7280", marginTop: "8px", fontWeight: "500" }}>out of {maxScore}</span>
+          <span style={{ fontSize: "52px", fontWeight: "800", color: stressColor, lineHeight: "1.1", display: "block", textAlign: "center" }}>{score}</span>
+          <span style={{ fontSize: "15px", color: "#6b7280", fontWeight: "500", display: "block", textAlign: "center", marginTop: "4px" }}>out of {maxScore}</span>
         </div>
-        
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <StressIcon color={"#111827"} size={32} />
-          <span style={{ fontSize: "28px", fontWeight: "800", color: "#111827" }}>
-             {level === "low" ? "Low" : level === "moderate" ? "Moderate" : "High"} - Stress
+
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px" }}>
+          <span style={{ display: "flex", alignItems: "center" }}>
+            <StressIcon color={"#111827"} size={28} />
+          </span>
+          <span style={{ fontSize: "28px", fontWeight: "800", color: "#111827", lineHeight: "1" }}>
+            {level === "low" ? "Low" : level === "moderate" ? "Moderate" : "High"} - Stress
           </span>
         </div>
       </div>
@@ -95,7 +98,7 @@ const PdfReport = React.forwardRef(({ name, score, aiFacts }, ref) => {
         </p>
 
         <p style={{ fontSize: "14px", color: "#9ca3af", fontStyle: "italic", lineHeight: "1.5" }}>
-          Note: Powered by Emoneeds. This automated brief reflects self-reported data intended for performance benchmarking, not clinical diagnosis.
+        Disclaimer : Powered by Emoneeds. This automated brief reflects self-reported data intended for performance benchmarking, not clinical diagnosis.
         </p>
       </div>
     </div>
