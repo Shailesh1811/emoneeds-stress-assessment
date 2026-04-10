@@ -10,77 +10,67 @@ const archetypeDescriptions = {
 
 const FactsScreen = ({ aiFacts, archetype, aiLoading, onRestart }) => {
   return (
-    <div className="page-wrapper py-8 sm:py-12 px-5 sm:px-8 gap-5 sm:gap-7">
-      {/* Logo */}
-      <div className="flex justify-center">
-        <img src="/emoneeds-logo.png" alt="emoneeds" className="h-8 sm:h-11 w-auto" />
+    <div className="min-h-screen flex flex-col bg-background px-6 sm:px-10 py-8 sm:py-12 gap-6 sm:gap-8">
+      {/* Header */}
+      <div className="flex justify-center shrink-0">
+        <img src="/emoneeds-logo.png" alt="emoneeds" className="h-9 sm:h-12 w-auto" />
       </div>
 
       {/* Title */}
       <div className="text-center animate-fade-in">
-        <div className="inline-flex items-center justify-center gap-2 rounded-full bg-primary-light px-4 py-2 mb-3 shadow-sm">
-          <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+        <div className="inline-flex items-center justify-center gap-2 rounded-full bg-primary-light px-4 py-2 mb-4 shadow-sm">
+          <Sparkles className="h-4 w-4 text-primary" />
           <span className="text-xs sm:text-sm font-bold text-primary-dark">AI-Powered Insights</span>
         </div>
-        <h2 className="text-2xl sm:text-3xl lg:text-5xl font-extrabold text-foreground mb-1.5">
-          Your Personalized Facts
-        </h2>
-        <p className="text-xs sm:text-sm lg:text-base text-muted-foreground font-secondary">
+        <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-foreground mb-2">Your Personalized Facts</h2>
+        <p className="text-sm sm:text-base md:text-lg text-muted-foreground font-secondary">
           Based on your stress assessment responses
         </p>
       </div>
 
       {/* Archetype Card */}
       {archetype && (
-        <div className="content-container rounded-2xl border-2 border-primary/20 bg-primary-light p-5 sm:p-6 shadow-sm animate-fade-in">
-          <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-            <Brain className="h-4 w-4 sm:h-5 sm:w-5 text-primary shrink-0" />
+        <div className="w-full max-w-2xl mx-auto rounded-2xl border-2 border-primary/20 bg-primary-light p-5 sm:p-7 shadow-sm animate-fade-in">
+          <div className="flex items-center gap-3 mb-3">
+            <Brain className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
             <span className="text-xs font-bold uppercase tracking-widest text-primary">Executive Archetype</span>
           </div>
-          <h3 className="text-lg sm:text-xl lg:text-2xl font-extrabold text-primary-dark mb-1.5">{archetype}</h3>
-          <p className="text-xs sm:text-sm text-foreground font-secondary leading-relaxed">
+          <h3 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-primary-dark mb-2">{archetype}</h3>
+          <p className="text-sm sm:text-base text-foreground font-secondary leading-relaxed">
             {archetypeDescriptions[archetype] || "A unique stress profile identified from your responses."}
           </p>
         </div>
       )}
 
       {/* Facts */}
-      <div className="content-container rounded-2xl bg-card p-5 sm:p-7 shadow-card border border-border/50 animate-fade-in">
+      <div className="w-full max-w-2xl mx-auto rounded-2xl bg-card p-5 sm:p-8 shadow-card border border-border/50 animate-fade-in">
         {aiLoading ? (
-          <div className="flex flex-col items-center justify-center gap-3 py-8 sm:py-10">
-            <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 text-primary animate-spin" />
-            <p className="text-xs sm:text-sm text-muted-foreground font-secondary">
-              Generating your personalized insights…
-            </p>
+          <div className="flex flex-col items-center justify-center gap-3 py-10">
+            <Loader2 className="h-10 w-10 text-primary animate-spin" />
+            <p className="text-sm sm:text-base text-muted-foreground font-secondary">Generating your personalized insights…</p>
           </div>
         ) : aiFacts && aiFacts.length > 0 ? (
-          <ul className="flex flex-col gap-4 sm:gap-6">
+          <ul className="flex flex-col gap-5 sm:gap-6">
             {aiFacts.map((fact, i) => (
-              <li
-                key={i}
-                className="flex items-start gap-3 sm:gap-4 animate-fade-in"
-                style={{ animationDelay: `${i * 150}ms` }}
-              >
-                <span className="flex h-7 w-7 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-full bg-primary text-xs sm:text-sm font-black text-primary-foreground shadow-sm">
+              <li key={i} className="flex items-start gap-4 animate-fade-in" style={{ animationDelay: `${i * 150}ms` }}>
+                <span className="flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-black text-primary-foreground shadow-sm">
                   {i + 1}
                 </span>
-                <p className="text-sm sm:text-base lg:text-lg text-foreground font-secondary leading-relaxed pt-0.5">
-                  {fact}
-                </p>
+                <p className="text-base sm:text-lg md:text-xl text-foreground font-secondary leading-relaxed pt-0.5">{fact}</p>
               </li>
             ))}
           </ul>
         ) : (
-          <p className="text-center text-xs sm:text-sm text-muted-foreground font-secondary py-8">
+          <p className="text-center text-sm sm:text-base text-muted-foreground font-secondary py-8">
             No insights available. Please retake the assessment.
           </p>
         )}
       </div>
 
       {/* Footer */}
-      <div className="content-container flex justify-center pb-4 animate-fade-in">
-        <Button variant="outline" onClick={onRestart} className="w-full sm:w-auto gap-2 rounded-2xl border-2">
-          <RotateCcw /> Take Again
+      <div className="flex justify-center pb-4 animate-fade-in">
+        <Button variant="outline" onClick={onRestart} className="gap-2 h-12 sm:h-14 px-7 sm:px-10 text-sm sm:text-base font-bold rounded-2xl border-2">
+          <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5" /> Take Again
         </Button>
       </div>
     </div>
