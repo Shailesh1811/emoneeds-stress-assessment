@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Button } from "./Button.jsx";
-import { User, Mail, Phone } from "lucide-react";
+import { User, Mail, Phone, Building2 } from "lucide-react";
 
 const LeadCaptureScreen = ({ onSubmit, onBack }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [organization, setOrganization] = useState("");
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -22,7 +23,7 @@ const LeadCaptureScreen = ({ onSubmit, onBack }) => {
     if (isSubmitting) return;
     if (validate()) {
       setIsSubmitting(true);
-      onSubmit({ name: name.trim(), email: email.trim(), phone: phone.trim() || undefined });
+      onSubmit({ name: name.trim(), email: email.trim(), phone: phone.trim() || undefined, organization: organization.trim() || undefined });
     }
   };
 
@@ -86,6 +87,22 @@ const LeadCaptureScreen = ({ onSubmit, onBack }) => {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="Enter your phone number"
+                className="h-12 sm:h-14 w-full rounded-xl border-2 border-border bg-background pl-10 pr-4 text-sm sm:text-base outline-none transition-all duration-300 placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-foreground">
+              Organization <span className="text-muted-foreground font-normal">(optional)</span>
+            </label>
+            <div className="relative">
+              <Building2 className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="text"
+                value={organization}
+                onChange={(e) => setOrganization(e.target.value)}
+                placeholder="Enter your organization name"
                 className="h-12 sm:h-14 w-full rounded-xl border-2 border-border bg-background pl-10 pr-4 text-sm sm:text-base outline-none transition-all duration-300 placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
               />
             </div>

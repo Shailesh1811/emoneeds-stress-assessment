@@ -33,7 +33,7 @@ const App = () => {
 
   const handleLeadSubmit = useCallback(
     async (data) => {
-      setUserInfo({ name: data.name, email: data.email });
+      setUserInfo({ name: data.name, email: data.email, organization: data.organization });
       // Calculate score immediately — no need to wait for AI
       const score = pendingAnswers.reduce((sum, a, i) => sum + ([3, 4, 6, 7].includes(i) ? 4 - a : a), 0);
       setTotalScore(score);
@@ -61,6 +61,7 @@ const App = () => {
               score,
               stress_level: calculateStressLevel(score),
               answers: answersDetail,
+              organization: data.organization || null,
             })
           : Promise.resolve(),
       ]);
