@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import WelcomeScreen from "./components/WelcomeScreen.jsx";
+import WhoWeAreScreen from "./components/WhoWeAreScreen.jsx";
 import StatsScreen from "./components/StatsScreen.jsx";
 import LeadCaptureScreen from "./components/LeadCaptureScreen.jsx";
 import QuestionScreen from "./components/QuestionScreen.jsx";
@@ -24,7 +25,7 @@ const App = () => {
   const pdfRef = useRef(null);
   const hasDispatchedEmailRef = useRef(false);
 
-  const handleStart = () => setScreen("stats");
+  const handleStart = () => setScreen("whoweare");
 
   const handleAssessmentComplete = useCallback((answers) => {
     setPendingAnswers(answers);
@@ -137,6 +138,7 @@ const App = () => {
   return (
     <div className="min-h-screen w-screen">
       {screen === "welcome" && <WelcomeScreen onStart={handleStart} />}
+      {screen === "whoweare" && <WhoWeAreScreen onNext={() => setScreen("stats")} />}
       {screen === "stats" && <StatsScreen onNext={() => setScreen("questions")} />}
       {screen === "questions" && <QuestionScreen onComplete={handleAssessmentComplete} onBack={() => setScreen("stats")} />}
       {screen === "lead" && <LeadCaptureScreen onSubmit={handleLeadSubmit} onBack={() => setScreen("questions")} />}
