@@ -159,7 +159,7 @@ const PdfReport = React.forwardRef(({ name, score, aiFacts }, ref) => {
             style={{ maxWidth:"160px", margin:"0 auto 14px", display:"block" }} />
 
           {/* Snapshot badge */}
-          <div style={{ display:"flex", justifyContent:"center", marginBottom:"16px" }}>
+          <div style={{ display:"flex", justifyContent:"center", marginBottom:"8px" }}>
             <div style={{
               background: TEAL_LIGHT, border:`1px solid ${TEAL_MID}`,
               borderRadius:"50px", padding:"5px 16px",
@@ -176,13 +176,13 @@ const PdfReport = React.forwardRef(({ name, score, aiFacts }, ref) => {
           {/* Main title */}
           <h1 style={{
             fontFamily:SERIF, fontSize:"46px", fontWeight:"800",
-            color:NAVY, margin:"0 0 16px 0", lineHeight:"1.1",
+            color:NAVY, margin:"0 0 8px 0", lineHeight:"1.1",
           }}>
             Stress Assessment Report
           </h1>
 
           {/* Greeting pill */}
-          <div style={{ display:"flex", justifyContent:"center", marginBottom:"12px" }}>
+          <div style={{ display:"flex", justifyContent:"center", marginBottom:"6px" }}>
             <div style={{
               background: TEAL_LIGHT, border:`1px solid ${TEAL_MID}`,
               borderRadius:"8px", padding:"7px 24px",
@@ -212,7 +212,7 @@ const PdfReport = React.forwardRef(({ name, score, aiFacts }, ref) => {
           borderRadius: "20px",
           padding:      "26px 30px",
           display:      "flex",
-          alignItems:   "center",
+          alignItems:   "flex-start",
           gap:          "30px",
           marginBottom: "32px",
         }}>
@@ -234,7 +234,7 @@ const PdfReport = React.forwardRef(({ name, score, aiFacts }, ref) => {
           </div>
 
           {/* Right side */}
-          <div style={{ flex:1 }}>
+          <div style={{ flex:1, paddingTop:"6px" }}>
 
             {/* ── STRESS BADGE ──
                 NOTE: no flex/gap here to avoid html2canvas text-clipping.
