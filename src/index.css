@@ -50,4 +50,14 @@
 
 @layer utilities {
   .font-secondary { font-family: var(--font-secondary); }
+
+  /* Centered responsive page wrapper — constrains content on large desktops */
+  .page-wrapper {
+    @apply min-h-screen w-full flex flex-col bg-background;
+  }
+
+  /* Content container — centered with max-width, consistent horizontal padding */
+  .content-container {
+    @apply w-full max-w-xl sm:max-w-2xl lg:max-w-3xl mx-auto px-5 sm:px-8 lg:px-6;
+  }
 }

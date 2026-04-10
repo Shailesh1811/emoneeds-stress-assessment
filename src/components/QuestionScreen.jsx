@@ -34,11 +34,11 @@ const QuestionScreen = ({ onComplete, onBack }) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="page-wrapper">
       {/* Header */}
-      <div className="w-full px-5 sm:px-10 pt-6 sm:pt-10 shrink-0">
-        <div className="flex justify-center mb-4 sm:mb-6">
-          <img src="/emoneeds-logo.png" alt="emoneeds" className="h-9 sm:h-12 md:h-14 w-auto" />
+      <div className="content-container pt-6 sm:pt-10 pb-0">
+        <div className="flex justify-center mb-4 sm:mb-5">
+          <img src="/emoneeds-logo.png" alt="emoneeds" className="h-8 sm:h-11 md:h-13 w-auto" />
         </div>
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs sm:text-sm font-semibold text-muted-foreground font-secondary">
@@ -48,29 +48,32 @@ const QuestionScreen = ({ onComplete, onBack }) => {
             {question.category}
           </span>
         </div>
-        <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-          <div className="h-full rounded-full bg-primary transition-all duration-500 ease-out" style={{ width: `${progress}%` }} />
+        <div className="h-1.5 sm:h-2 w-full overflow-hidden rounded-full bg-muted">
+          <div
+            className="h-full rounded-full bg-primary transition-all duration-500 ease-out"
+            style={{ width: `${progress}%` }}
+          />
         </div>
       </div>
 
       {/* Question + Answers */}
-      <div className="flex flex-1 flex-col items-center justify-center px-5 sm:px-10 py-6" key={currentIndex}>
-        <div className="w-full max-w-2xl animate-fade-in">
-          <h2 className="mb-6 sm:mb-10 text-center text-xl sm:text-3xl md:text-4xl font-extrabold text-foreground leading-snug">
+      <div className="flex flex-1 flex-col items-center justify-center py-6 sm:py-8" key={currentIndex}>
+        <div className="content-container animate-fade-in">
+          <h2 className="mb-5 sm:mb-8 text-center text-lg sm:text-2xl lg:text-3xl font-extrabold text-foreground leading-snug">
             {question.text}
           </h2>
-          <div className="flex flex-col gap-3 sm:gap-4">
+          <div className="flex flex-col gap-2.5 sm:gap-3">
             {answerOptions.map((option) => (
               <button
                 key={option.value}
                 onClick={() => handleSelect(option.value)}
-                className={`flex w-full items-center rounded-2xl border-2 px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg font-bold transition-all duration-300 ${
+                className={`flex w-full items-center rounded-xl border-2 px-4 sm:px-5 py-3 sm:py-3.5 text-sm sm:text-base font-semibold transition-all duration-300 min-h-[52px] sm:min-h-[60px] ${
                   selectedAnswer === option.value
                     ? "border-primary bg-primary-light text-primary-dark shadow-card scale-[1.02]"
                     : "border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent hover:scale-[1.01]"
                 }`}
               >
-                <span className={`mr-4 sm:mr-5 flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full text-sm sm:text-base font-black ${
+                <span className={`mr-3 sm:mr-4 flex h-7 w-7 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-full text-xs sm:text-sm font-black ${
                   selectedAnswer === option.value ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
                 }`}>
                   {option.value + 1}
@@ -83,9 +86,9 @@ const QuestionScreen = ({ onComplete, onBack }) => {
       </div>
 
       {/* Footer */}
-      <div className="w-full flex items-center px-5 sm:px-10 pb-6 sm:pb-10 shrink-0">
-        <Button variant="outline" onClick={handlePrev} className="gap-2 h-11 sm:h-14 px-5 sm:px-7 text-sm sm:text-base font-semibold rounded-2xl border-2">
-          <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" /> Back
+      <div className="content-container pb-6 sm:pb-10 flex items-center">
+        <Button variant="outline" size="sm" onClick={handlePrev} className="gap-2 rounded-xl border-2">
+          <ArrowLeft /> Back
         </Button>
       </div>
     </div>
