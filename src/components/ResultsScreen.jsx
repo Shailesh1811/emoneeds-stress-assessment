@@ -98,6 +98,14 @@ const ResultsScreen = ({ score, aiFacts, archetype, aiLoading, onRestart, onView
         </div>
       </div>
 
+      {/* Privacy note */}
+      <div className="w-full max-w-2xl mx-auto flex items-start gap-2 px-1 animate-fade-in">
+        <span className="text-muted-foreground mt-0.5 shrink-0">🔒</span>
+        <p className="text-xs sm:text-sm text-muted-foreground font-secondary leading-relaxed">
+          These results are <strong>confidential</strong> and will be permanently removed from our databases once your report email has been sent.
+        </p>
+      </div>
+
       {/* Buttons */}
       <div className="w-full max-w-2xl mx-auto flex gap-3 sm:gap-4 animate-fade-in pb-4">
         <Button variant="outline" onClick={onRestart} className="flex-1 gap-2 h-12 sm:h-14 text-sm sm:text-base font-bold rounded-2xl border-2">
