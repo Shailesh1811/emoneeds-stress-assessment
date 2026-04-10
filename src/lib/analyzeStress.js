@@ -68,12 +68,12 @@ Raw PSS Answers: ${answers.join(", ")}.
 Based strictly on this data, output exactly 3 highly sophisticated, boardroom-ready insights regarding their current operational bandwidth and leadership posture.
 
 STRICT RULES:
-1. Length: Absolute maximum of 8-12 words per insight.
+1. Format: Each insight MUST follow exactly this structure — "Category Name: insight description." where Category Name is 2-4 words (a noun phrase, e.g. "High Cognitive Depletion", "Impaired Executive Function", "Operational Friction") and the description is one clear sentence of 12-18 words.
 2. Tone: Analytical, authoritative, discreet, and peer-to-peer.
 3. FORBIDDEN WORDS (Do NOT use): "stress", "tired", "self-care", "wellness", "feelings", "take a break", "burnout", "overwhelmed".
 4. PREFERRED CONCEPTS: Use terms like "cognitive bandwidth", "operational friction", "executive function", "systemic resilience", "decision fatigue", "strategic detachment", or "tactical depletion".
 5. Address the executive directly as "You".
-6. Output ONLY the 3 numbered facts.`;
+6. Output ONLY the 3 numbered lines. No extra text.`;
 
   try {
     const text = await analyzeStressWithRetry(prompt);
