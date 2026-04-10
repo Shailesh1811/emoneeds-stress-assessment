@@ -22,44 +22,38 @@ const stats = [
 
 const StatsScreen = ({ onNext }) => {
   return (
-    <div className="flex h-screen flex-col items-center justify-between bg-background px-8 py-12 md:py-20">
-      
-      {/* Top Header */}
+    <div className="min-h-screen flex flex-col items-center justify-between bg-background px-6 sm:px-10 py-10 sm:py-16">
       <div className="w-full text-center shrink-0 animate-fade-in">
-        <img src="/emoneeds-logo.png" alt="emoneeds" className="h-16 md:h-20 w-auto mx-auto mb-6 md:mb-8 drop-shadow-xl" />
-        <h1 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight mb-3">
+        <img src="/emoneeds-logo.png" alt="emoneeds" className="h-12 sm:h-16 md:h-20 w-auto mx-auto mb-4 sm:mb-6" />
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-foreground tracking-tight mb-2">
           Do You Know?
         </h1>
-        <p className="text-lg md:text-xl text-muted-foreground font-secondary">
+        <p className="text-sm sm:text-base md:text-lg text-muted-foreground font-secondary">
           The hidden cost of workplace stress
         </p>
       </div>
 
-      {/* Center Facts List */}
-      <div className="flex flex-col justify-center flex-1 w-full max-w-3xl my-8 px-4">
-        <div className="flex flex-col gap-6 md:gap-8">
-          {stats.map((item, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-6 md:gap-8 rounded-2xl bg-card border-2 border-border/50 px-8 py-6 shadow-card animate-fade-in"
-              style={{ animationDelay: `${i * 120}ms` }}
-            >
-              <span className="shrink-0 text-3xl md:text-4xl font-black text-primary min-w-[110px] md:min-w-[130px] text-right drop-shadow-sm">
-                {item.value}
-              </span>
-              <p className="text-lg md:text-xl text-foreground font-secondary leading-relaxed">
-                {item.fact}
-              </p>
-            </div>
-          ))}
-        </div>
+      <div className="flex flex-col w-full max-w-2xl my-6 sm:my-8 gap-4 sm:gap-5 px-0">
+        {stats.map((item, i) => (
+          <div
+            key={i}
+            className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 rounded-2xl bg-card border-2 border-border/50 px-5 sm:px-7 py-4 sm:py-5 shadow-card animate-fade-in"
+            style={{ animationDelay: `${i * 120}ms` }}
+          >
+            <span className="text-2xl sm:text-3xl font-black text-primary sm:min-w-[110px] sm:text-right">
+              {item.value}
+            </span>
+            <p className="text-sm sm:text-base md:text-lg text-foreground font-secondary leading-relaxed">
+              {item.fact}
+            </p>
+          </div>
+        ))}
       </div>
 
-      {/* Bottom Action */}
-      <div className="flex justify-center w-full shrink-0 animate-fade-in delay-300">
-        <Button size="lg" onClick={onNext} className="gap-3 px-10 md:px-14 h-16 md:h-18 text-lg md:text-xl font-bold rounded-2xl shadow-xl hover:-translate-y-1 transition-transform">
+      <div className="flex justify-center w-full shrink-0 animate-fade-in">
+        <Button size="lg" onClick={onNext} className="w-full sm:w-auto gap-3 px-8 sm:px-12 h-14 sm:h-16 text-base sm:text-lg font-bold rounded-2xl shadow-xl">
           Take the Stress Assessment
-          <ArrowRight className="w-6 h-6" />
+          <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
         </Button>
       </div>
     </div>

@@ -129,7 +129,7 @@ const App = () => {
   }, []);
 
   return (
-    <div className="h-screen w-screen overflow-hidden">
+    <div className="min-h-screen w-full">
       {screen === "welcome" && <WelcomeScreen onStart={handleStart} />}
       {screen === "stats" && <StatsScreen onNext={() => setScreen("questions")} />}
       {screen === "questions" && <QuestionScreen onComplete={handleAssessmentComplete} onBack={() => setScreen("stats")} />}
