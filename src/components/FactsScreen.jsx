@@ -1,5 +1,5 @@
 import { Button } from "./Button.jsx";
-import { Sparkles, Brain, RotateCcw, Loader2 } from "lucide-react";
+import { Sparkles, Brain, RotateCcw, Loader2, ArrowRight } from "lucide-react";
 
 const archetypeDescriptions = {
   "The High-Functioning Firefighter": "You're highly capable but constantly putting out fires. Your drive is an asset — but without rest, it becomes a liability.",
@@ -8,7 +8,7 @@ const archetypeDescriptions = {
   "Optimal Flow State": "You're operating at your peak. Stress is channeled productively and your mind is clear and focused.",
 };
 
-const FactsScreen = ({ aiFacts, archetype, aiLoading, onRestart }) => {
+const FactsScreen = ({ aiFacts, archetype, aiLoading, onRestart, onNext }) => {
   return (
     <div className="min-h-screen flex flex-col bg-background px-6 sm:px-10 py-8 sm:py-12 gap-6 sm:gap-8">
       {/* Header */}
@@ -67,10 +67,13 @@ const FactsScreen = ({ aiFacts, archetype, aiLoading, onRestart }) => {
         )}
       </div>
 
-      {/* Footer */}
-      <div className="flex justify-center pb-4 animate-fade-in">
-        <Button variant="outline" onClick={onRestart} className="gap-2 h-12 sm:h-14 px-7 sm:px-10 text-sm sm:text-base font-bold rounded-2xl border-2">
+      {/* Footer buttons */}
+      <div className="w-full max-w-2xl mx-auto flex gap-3 sm:gap-4 pb-4 animate-fade-in">
+        <Button variant="outline" onClick={onRestart} className="flex-1 gap-2 h-12 sm:h-14 text-sm sm:text-base font-bold rounded-2xl border-2">
           <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5" /> Take Again
+        </Button>
+        <Button onClick={onNext} className="flex-1 gap-2 h-12 sm:h-14 text-sm sm:text-base font-bold rounded-2xl shadow-lg">
+          Next <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
         </Button>
       </div>
     </div>

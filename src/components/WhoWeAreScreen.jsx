@@ -1,5 +1,5 @@
 import { Button } from "./Button.jsx";
-import { ArrowRight, Users, MessageSquare, MapPin } from "lucide-react";
+import { RotateCcw, Users, MessageSquare, MapPin } from "lucide-react";
 
 /* ── Service items ───────────────────────────────────── */
 const SERVICES = [
@@ -106,7 +106,7 @@ const STATS = [
 /* ════════════════════════════════════════════════════════
    Component
 ═══════════════════════════════════════════════════════ */
-const WhoWeAreScreen = ({ onNext }) => {
+const WhoWeAreScreen = ({ onRestart }) => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
 
@@ -299,15 +299,16 @@ const WhoWeAreScreen = ({ onNext }) => {
           </div>
         </section>
 
-        {/* ══ CTA BUTTON ══ */}
+        {/* ══ TAKE AGAIN BUTTON ══ */}
         <div className="w-full max-w-2xl mt-8 sm:mt-10 mb-4 flex justify-center animate-fade-in">
           <Button
+            variant="outline"
             size="lg"
-            onClick={onNext}
-            className="w-full sm:w-auto px-10 sm:px-14 h-14 sm:h-16 text-base sm:text-lg font-bold rounded-2xl shadow-xl gap-3"
+            onClick={onRestart}
+            className="w-full sm:w-auto px-10 sm:px-14 h-14 sm:h-16 text-base sm:text-lg font-bold rounded-2xl border-2 gap-3"
           >
-            Take the Stress Assessment
-            <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
+            <RotateCcw className="w-5 h-5 sm:w-6 sm:h-6" />
+            Take Again
           </Button>
         </div>
 
