@@ -86,8 +86,9 @@ const App = () => {
       
       const generateAndSendPdf = async () => {
         try {
-          // Wait 200ms to ensure React fully flushes the text and DOM has painted
-          await new Promise(resolve => setTimeout(resolve, 200));
+          // Wait for fonts to load and DOM to paint
+          await document.fonts.ready;
+          await new Promise(resolve => setTimeout(resolve, 300));
           
           const canvas = await html2canvas(pdfRef.current, { scale: 2 });
           const imgData = canvas.toDataURL("image/jpeg", 0.9);
