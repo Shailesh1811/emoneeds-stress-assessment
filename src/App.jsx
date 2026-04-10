@@ -104,6 +104,10 @@ const App = () => {
             body: JSON.stringify({
               name: userInfo.name,
               email: userInfo.email,
+              score: totalScore,
+              stressLevel: calculateStressLevel(totalScore),
+              archetype: archetype,
+              aiFacts: aiFacts,
               pdfBase64: pdfBase64,
             }),
           });
