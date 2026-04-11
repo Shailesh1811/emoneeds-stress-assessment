@@ -242,20 +242,24 @@ function buildHtml({ name, score, stressLevel, aiFacts }) {
               <table cellpadding="0" cellspacing="0" border="0" width="100%">
                 <tr>
 
-                  <!-- LEFT: CSS conic-gradient gauge (SVG not supported in email clients) -->
-                  <td width="160" style="vertical-align:middle;padding-right:45px;">
-                    <div style="width:160px;height:160px;border-radius:50%;
-                      background:conic-gradient(${sm.color} 0% ${pct}%, #d1e5e5 ${pct}% 100%);
-                      display:inline-flex;align-items:center;justify-content:center;">
-                      <!-- Inner WHITE circle — must be white to show ring against teal-light card -->
-                      <div style="width:122px;height:122px;border-radius:50%;
-                        background:#ffffff;
-                        display:flex;flex-direction:column;
-                        align-items:center;justify-content:center;text-align:center;">
-                        <span style="font-size:48px;font-weight:800;color:${sm.color};
-                          line-height:1;font-family:Arial,sans-serif;display:block;">${score}</span>
-                        <span style="font-size:13px;color:${GRAY};font-weight:600;
-                          font-family:Arial,sans-serif;margin-top:4px;display:block;">out of ${max}</span>
+                  <!-- LEFT: gauge ring — no flex (Gmail strips it).
+                       Outer div uses padding:19px so natural size = 19+122+19 = 160px
+                       ring thickness exactly 19px. Inner white circle 122x122.
+                       Spacer div pushes text to vertical center. -->
+                  <td width="160" style="vertical-align:middle;padding-right:45px;text-align:center;">
+                    <div style="display:inline-block;padding:19px;border-radius:80px;
+                      background:conic-gradient(${sm.color} 0% ${pct}%, #d1e5e5 ${pct}% 100%);">
+                      <!-- Inner white circle: 122x122 -->
+                      <div style="width:122px;height:122px;border-radius:61px;
+                        background:#ffffff;text-align:center;overflow:hidden;">
+                        <!-- Spacer: (122 - 48score - 4gap - 16label) / 2 = 27px -->
+                        <div style="height:27px;line-height:0;font-size:0;">&nbsp;</div>
+                        <span style="display:block;font-size:48px;font-weight:800;
+                          color:${sm.color};line-height:1;
+                          font-family:Arial,sans-serif;">${score}</span>
+                        <span style="display:block;font-size:13px;color:${GRAY};
+                          font-weight:600;font-family:Arial,sans-serif;
+                          margin-top:4px;">out of ${max}</span>
                       </div>
                     </div>
                   </td>
