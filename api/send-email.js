@@ -96,9 +96,6 @@ function buildHtml({ name, score, stressLevel, aiFacts }) {
   const logoUrl = `${baseUrl}/emoneeds-logo.png`;
 
   /* ── SVG gauge ring math (same as PdfReport: R=44, viewBox 0 0 100 100) ── */
-  const R    = 44;
-  const circ = 2 * Math.PI * R;
-  const dashOffset = circ - (pct / 100) * circ;
 
   /* ── Watermark: head+leaf SVG as base64 data URI ── */
   const wmSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">` +
@@ -245,37 +242,22 @@ function buildHtml({ name, score, stressLevel, aiFacts }) {
               <table cellpadding="0" cellspacing="0" border="0" width="100%">
                 <tr>
 
-                  <!-- LEFT: SVG gauge ring with score inside -->
+                  <!-- LEFT: CSS conic-gradient gauge (SVG not supported in email clients) -->
                   <td width="160" style="vertical-align:middle;padding-right:45px;">
-                    <svg width="140" height="140" viewBox="0 0 100 100"
-                      style="display:block;">
-                      <!-- Track circle -->
-                      <circle cx="50" cy="50" r="${R}"
-                        fill="none" stroke="#d1e5e5" stroke-width="9"/>
-                      <!-- Progress arc (stress color, rotated -90°) -->
-                      <circle cx="50" cy="50" r="${R}"
-                        fill="none"
-                        stroke="${sm.color}"
-                        stroke-width="9"
-                        stroke-dasharray="${circ.toFixed(4)}"
-                        stroke-dashoffset="${dashOffset.toFixed(4)}"
-                        stroke-linecap="round"
-                        transform="rotate(-90 50 50)"/>
-                      <!-- Score number (centered in SVG) -->
-                      <text x="50" y="44"
-                        text-anchor="middle" dominant-baseline="middle"
-                        font-size="24" font-weight="800"
-                        fill="${sm.color}" font-family="Arial,sans-serif">
-                        ${score}
-                      </text>
-                      <!-- "out of 40" label -->
-                      <text x="50" y="62"
-                        text-anchor="middle" dominant-baseline="middle"
-                        font-size="9" font-weight="600"
-                        fill="${GRAY}" font-family="Arial,sans-serif">
-                        out of ${max}
-                      </text>
-                    </svg>
+                    <div style="width:140px;height:140px;border-radius:50%;
+                      background:conic-gradient(${sm.color} 0% ${pct}%, #d1e5e5 ${pct}% 100%);
+                      display:inline-flex;align-items:center;justify-content:center;">
+                      <!-- Inner white circle (creates ring effect) -->
+                      <div style="width:106px;height:106px;border-radius:50%;
+                        background:${TEAL_LIGHT};
+                        display:flex;flex-direction:column;
+                        align-items:center;justify-content:center;text-align:center;">
+                        <span style="font-size:42px;font-weight:800;color:${sm.color};
+                          line-height:1;font-family:Arial,sans-serif;">${score}</span>
+                        <span style="font-size:13px;color:${GRAY};font-weight:600;
+                          font-family:Arial,sans-serif;margin-top:3px;">out of ${max}</span>
+                      </div>
+                    </div>
                   </td>
 
                   <!-- RIGHT: badge + headline + subline -->
