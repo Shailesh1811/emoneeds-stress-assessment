@@ -244,18 +244,18 @@ function buildHtml({ name, score, stressLevel, aiFacts }) {
 
                   <!-- LEFT: CSS conic-gradient gauge (SVG not supported in email clients) -->
                   <td width="160" style="vertical-align:middle;padding-right:45px;">
-                    <div style="width:140px;height:140px;border-radius:50%;
+                    <div style="width:160px;height:160px;border-radius:50%;
                       background:conic-gradient(${sm.color} 0% ${pct}%, #d1e5e5 ${pct}% 100%);
                       display:inline-flex;align-items:center;justify-content:center;">
-                      <!-- Inner white circle (creates ring effect) -->
-                      <div style="width:106px;height:106px;border-radius:50%;
-                        background:${TEAL_LIGHT};
+                      <!-- Inner WHITE circle — must be white to show ring against teal-light card -->
+                      <div style="width:122px;height:122px;border-radius:50%;
+                        background:#ffffff;
                         display:flex;flex-direction:column;
                         align-items:center;justify-content:center;text-align:center;">
-                        <span style="font-size:42px;font-weight:800;color:${sm.color};
-                          line-height:1;font-family:Arial,sans-serif;">${score}</span>
+                        <span style="font-size:48px;font-weight:800;color:${sm.color};
+                          line-height:1;font-family:Arial,sans-serif;display:block;">${score}</span>
                         <span style="font-size:13px;color:${GRAY};font-weight:600;
-                          font-family:Arial,sans-serif;margin-top:3px;">out of ${max}</span>
+                          font-family:Arial,sans-serif;margin-top:4px;display:block;">out of ${max}</span>
                       </div>
                     </div>
                   </td>
