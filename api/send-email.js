@@ -405,7 +405,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { email, name, score, stressLevel, archetype, aiFacts, pdfBase64 } = req.body;
+  const { email, name, score, stressLevel, archetype, aiFacts } = req.body;
 
   if (!email || !name || score === undefined) {
     return res.status(400).json({ error: "Missing required fields (email, name, score)" });
@@ -426,16 +426,6 @@ export default async function handler(req, res) {
       html,
     };
 
-    // Attach PDF if provided
-    if (pdfBase64) {
-      const base64Data = pdfBase64.includes("base64,")
-        ? pdfBase64.split("base64,")[1]
-        : pdfBase64;
-      emailPayload.attachments = [{
-        filename: "Stress_Assessment_Report.pdf",
-        content:  Buffer.from(base64Data, "base64"),
-      }];
-    }
 
     const result = await resend.emails.send(emailPayload);
 
