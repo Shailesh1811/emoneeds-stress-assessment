@@ -350,6 +350,31 @@ function buildHtml({ name, score, stressLevel, aiFacts }) {
               </tr>
             </table>
 
+            <!-- Visit Emoneeds Button -->
+            <table cellpadding="0" cellspacing="0" border="0" width="100%"
+              style="margin-bottom:28px;">
+              <tr>
+                <td align="center">
+                  <a href="https://emoneeds.com"
+                    target="_blank"
+                    style="display:inline-block;
+                      background:${TEAL};
+                      color:#ffffff;
+                      text-decoration:none;
+                      font-family:'Montserrat',Arial,sans-serif;
+                      font-size:15px;
+                      font-weight:700;
+                      letter-spacing:0.5px;
+                      padding:16px 48px;
+                      border-radius:50px;
+                      mso-padding-alt:0;
+                      line-height:1;">
+                    Visit Emoneeds &rarr;
+                  </a>
+                </td>
+              </tr>
+            </table>
+
             <!-- Disclaimer -->
             <p style="font-family:Arial,Helvetica,sans-serif;font-size:10px;
               color:#94a3b8;text-align:center;margin:0 auto;line-height:1.6;
