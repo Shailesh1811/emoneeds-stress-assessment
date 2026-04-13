@@ -25,7 +25,7 @@ const App = () => {
   const pdfRef = useRef(null);
   const hasDispatchedEmailRef = useRef(false);
 
-  const handleStart = () => setScreen("stats");
+  const handleStart = () => setScreen("questions");
 
   const handleAssessmentComplete = useCallback((answers) => {
     setPendingAnswers(answers);
@@ -138,8 +138,7 @@ const App = () => {
   return (
     <div className="min-h-screen w-screen">
       {screen === "welcome" && <WelcomeScreen onStart={handleStart} />}
-      {screen === "stats" && <StatsScreen onNext={() => setScreen("questions")} />}
-      {screen === "questions" && <QuestionScreen onComplete={handleAssessmentComplete} onBack={() => setScreen("stats")} />}
+      {screen === "questions" && <QuestionScreen onComplete={handleAssessmentComplete} onBack={() => setScreen("welcome")} />}
       {screen === "lead" && <LeadCaptureScreen onSubmit={handleLeadSubmit} onBack={() => setScreen("questions")} />}
       {screen === "results" && (
         <ResultsScreen
