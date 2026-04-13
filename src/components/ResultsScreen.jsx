@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { calculateStressLevel, stressLevelConfig, questions } from "../lib/assessment-data.js";
 import QRCode from "react-qr-code";
 import { Button } from "./Button.jsx";
@@ -10,6 +11,8 @@ const stressColorMap = {
 };
 
 const ResultsScreen = ({ score, aiFacts, archetype, aiLoading, onRestart, onViewFacts }) => {
+  useEffect(() => { window.scrollTo(0, 0); }, []);
+
   const level = calculateStressLevel(score);
   const config = stressLevelConfig[level];
   const maxScore = questions.length * 4;
