@@ -62,14 +62,38 @@ const App = () => {
     setRelArchetype(null);
     setScreen("rel-results");
 
-    try {
-      const result = await analyzeRelationship(relAnswers);
-      if (result?.score !== undefined) {
-        setRelArchetype(result.archetype);
-        setRelAiFacts(result.ai_facts);
+    const relAnswersDetail = {};
+    relAnswers.forEach((val, i) => { relAnswersDetail[`Q${i + 1}`] = val; });
+
+    const [relAiResult] = await Promise.allSettled([
+      analyzeRelationship(relAnswers),
+
+      supabase
+        ? supabase.from("relationship_assessments").insert({
+            name: data.name,
+            email: data.email,
+            phone: data.phone || null,
+            organization: data.organization || null,
+            score: s,
+            relationship_level: calculateRelationshipLevel(s),
+            answers: relAnswersDetail,
+          })
+        : Promise.resolve(),
+    ]);
+
+    if (relAiResult.status === "fulfilled" && relAiResult.value?.score !== undefined) {
+      const { archetype: relArc, ai_facts: relFacts } = relAiResult.value;
+      setRelArchetype(relArc);
+      setRelAiFacts(relFacts);
+      if (supabase) {
+        supabase.from("relationship_assessments")
+          .update({ archetype: relArc, ai_facts: relFacts })
+          .eq("email", data.email)
+          .order("created_at", { ascending: false })
+          .limit(1);
       }
-    } catch (err) {
-      console.error("Relationship AI error:", err);
+    } else {
+      console.error("Relationship AI error:", relAiResult.reason);
     }
     setRelAiLoading(false);
   }, [relAnswers]);
