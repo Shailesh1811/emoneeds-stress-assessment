@@ -60,36 +60,28 @@ const RelationshipQuestionScreen = ({ onComplete, onBack }) => {
             {question.text}
           </h2>
 
-          {/* Scale */}
-          <div className="flex flex-col gap-4">
-            {/* End labels */}
-            <div className="flex justify-between px-1">
-              <span className="text-xs sm:text-sm font-bold text-muted-foreground max-w-[30%] text-left leading-tight">{question.leftLabel}</span>
-              <span className="text-xs sm:text-sm font-bold text-muted-foreground max-w-[30%] text-right leading-tight">{question.rightLabel}</span>
-            </div>
-
-            {/* 5 buttons */}
-            <div className="flex justify-between gap-2 sm:gap-3">
-              {[1, 2, 3, 4, 5].map((val) => (
+          <div className="flex flex-col gap-3 sm:gap-4">
+            {question.options.map((label, idx) => {
+              const val = idx + 1;
+              return (
                 <button
                   key={val}
                   onClick={() => handleSelect(val)}
-                  className={`flex-1 aspect-square flex items-center justify-center rounded-2xl border-2 text-lg sm:text-2xl font-black transition-all duration-200 ${
+                  className={`flex w-full items-center rounded-2xl border-2 px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg font-bold transition-all duration-300 ${
                     selectedAnswer === val
-                      ? "border-rose-500 bg-rose-50 text-rose-600 shadow-md scale-105"
-                      : "border-border bg-card text-foreground hover:border-rose-300 hover:bg-rose-50/50 hover:scale-[1.03]"
+                      ? "border-rose-500 bg-rose-50 text-rose-700 shadow-card scale-[1.02]"
+                      : "border-border bg-card text-foreground hover:border-rose-300 hover:bg-rose-50/50 hover:scale-[1.01]"
                   }`}
                 >
-                  {val}
+                  <span className={`mr-4 sm:mr-5 flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full text-sm sm:text-base font-black ${
+                    selectedAnswer === val ? "bg-rose-500 text-white" : "bg-muted text-muted-foreground"
+                  }`}>
+                    {val}
+                  </span>
+                  <span className="text-left leading-tight">{label}</span>
                 </button>
-              ))}
-            </div>
-
-            {/* Number labels */}
-            <div className="flex justify-between px-1">
-              <span className="text-xs text-muted-foreground font-secondary">1 = {question.leftLabel}</span>
-              <span className="text-xs text-muted-foreground font-secondary">5 = {question.rightLabel}</span>
-            </div>
+              );
+            })}
           </div>
         </div>
       </div>

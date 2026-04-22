@@ -1,11 +1,32 @@
 export const relationshipQuestions = [
-  { text: "How often does your partner meet your needs?", leftLabel: "Poorly", rightLabel: "Extremely Well" },
-  { text: "In general, how satisfied are you with your relationship?", leftLabel: "Unsatisfied", rightLabel: "Extremely Satisfied" },
-  { text: "How good is your relationship compared to most?", leftLabel: "Poor", rightLabel: "Excellent" },
-  { text: "How often do you wish you hadn't gotten in this relationship?", leftLabel: "Never", rightLabel: "Very Often" },
-  { text: "To what extent has your relationship met your original expectations?", leftLabel: "Hardly at all", rightLabel: "Completely" },
-  { text: "How much do you love your partner?", leftLabel: "Not much", rightLabel: "Very Much" },
-  { text: "How many problems are there in your relationship?", leftLabel: "Very few", rightLabel: "Very Many" },
+  {
+    text: "How often does your partner meet your needs?",
+    options: ["Poorly", "Slightly", "Average", "Well", "Extremely Well"],
+  },
+  {
+    text: "In general, how satisfied are you with your relationship?",
+    options: ["Unsatisfied", "Slightly Satisfied", "Average", "Satisfied", "Extremely Satisfied"],
+  },
+  {
+    text: "How good is your relationship compared to most?",
+    options: ["Poor", "Below Average", "Average", "Good", "Excellent"],
+  },
+  {
+    text: "How often do you wish you hadn't gotten in this relationship?",
+    options: ["Never", "Rarely", "Sometimes", "Often", "Very Often"],
+  },
+  {
+    text: "To what extent has your relationship met your original expectations?",
+    options: ["Hardly at all", "Slightly", "Average", "Mostly", "Completely"],
+  },
+  {
+    text: "How much do you love your partner?",
+    options: ["Not much", "A little", "Average", "A lot", "Very Much"],
+  },
+  {
+    text: "How many problems are there in your relationship?",
+    options: ["Very few", "Few", "Average", "Many", "Very Many"],
+  },
 ];
 
 // Q4 (index 3) and Q7 (index 6) are reverse-scored per RAS standard
