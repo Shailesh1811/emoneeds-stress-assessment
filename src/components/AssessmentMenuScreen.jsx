@@ -17,7 +17,7 @@ const assessments = [
     description: "Evaluate the health and dynamics of your personal and professional relationships.",
     color: "#e11d48",
     bgColor: "#fff1f2",
-    available: false,
+    available: true,
   },
   {
     id: "anxiety",

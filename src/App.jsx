@@ -9,9 +9,13 @@ import QuestionScreen from "./components/QuestionScreen.jsx";
 import ResultsScreen from "./components/ResultsScreen.jsx";
 import FactsScreen from "./components/FactsScreen.jsx";
 import PdfReport from "./components/PdfReport.jsx";
+import RelationshipQuestionScreen from "./components/RelationshipQuestionScreen.jsx";
+import RelationshipResultsScreen from "./components/RelationshipResultsScreen.jsx";
 import { calculateStressLevel, questions } from "./lib/assessment-data.js";
+import { calculateRelationshipScore, calculateRelationshipLevel } from "./lib/relationship-data.js";
 import { supabase } from "./lib/supabaseClient.js";
 import { analyzeStress } from "./lib/analyzeStress.js";
+import { analyzeRelationship } from "./lib/analyzeRelationship.js";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
@@ -25,14 +29,62 @@ const App = () => {
   const [aiLoading, setAiLoading] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
 
+  // Relationship assessment state
+  const [relAnswers, setRelAnswers] = useState(null);
+  const [relScore, setRelScore] = useState(0);
+  const [relAiFacts, setRelAiFacts] = useState(null);
+  const [relArchetype, setRelArchetype] = useState(null);
+  const [relAiLoading, setRelAiLoading] = useState(false);
+  const [relUserInfo, setRelUserInfo] = useState(null);
+
   const pdfRef = useRef(null);
   const hasDispatchedEmailRef = useRef(false);
 
   const handleLogin = () => { setIsLoggedIn(true); setScreen("menu"); };
   const handleLogout = () => { setIsLoggedIn(false); setScreen("login"); };
   const handleSelectAssessment = (id) => {
-    if (id === "stress") setScreen("questions");
+    if (id === "stress")       setScreen("questions");
+    if (id === "relationship") setScreen("rel-questions");
   };
+
+  // ── Relationship assessment handlers ──
+  const handleRelQuestionsComplete = useCallback((answers) => {
+    setRelAnswers(answers);
+    setScreen("rel-lead");
+  }, []);
+
+  const handleRelLeadSubmit = useCallback(async (data) => {
+    setRelUserInfo({ name: data.name, email: data.email, organization: data.organization });
+    const s = calculateRelationshipScore(relAnswers || []);
+    setRelScore(s);
+    setRelAiLoading(true);
+    setRelAiFacts(null);
+    setRelArchetype(null);
+    setScreen("rel-results");
+
+    try {
+      const result = await analyzeRelationship(relAnswers);
+      if (result?.score !== undefined) {
+        setRelArchetype(result.archetype);
+        setRelAiFacts(result.ai_facts);
+      }
+    } catch (err) {
+      console.error("Relationship AI error:", err);
+    }
+    setRelAiLoading(false);
+  }, [relAnswers]);
+
+  const handleRelRestart = useCallback(() => {
+    setScreen("menu");
+    setRelAnswers(null);
+    setRelScore(0);
+    setRelAiFacts(null);
+    setRelArchetype(null);
+    setRelAiLoading(false);
+    setRelUserInfo(null);
+  }, []);
+
+  const handleRelViewFacts = useCallback(() => setScreen("rel-facts"), []);
 
   const handleStart = () => setScreen("questions");
 
@@ -172,6 +224,33 @@ const App = () => {
       )}
       {screen === "whoweare" && (
         <WhoWeAreScreen onRestart={handleRestart} onBackToMenu={() => setScreen("menu")} />
+      )}
+
+      {/* ── Relationship assessment flow ── */}
+      {screen === "rel-questions" && (
+        <RelationshipQuestionScreen onComplete={handleRelQuestionsComplete} onBack={() => setScreen("menu")} />
+      )}
+      {screen === "rel-lead" && (
+        <LeadCaptureScreen onSubmit={handleRelLeadSubmit} onBack={() => setScreen("rel-questions")} />
+      )}
+      {screen === "rel-results" && (
+        <RelationshipResultsScreen
+          score={relScore}
+          aiFacts={relAiFacts}
+          archetype={relArchetype}
+          aiLoading={relAiLoading}
+          onRestart={handleRelRestart}
+          onViewFacts={handleRelViewFacts}
+        />
+      )}
+      {screen === "rel-facts" && (
+        <FactsScreen
+          aiFacts={relAiFacts}
+          archetype={relArchetype}
+          aiLoading={relAiLoading}
+          onRestart={handleRelRestart}
+          onNext={handleRelRestart}
+        />
       )}
 
       {/* Invisible PDF Report Container */}
