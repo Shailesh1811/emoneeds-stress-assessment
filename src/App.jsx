@@ -82,6 +82,7 @@ const App = () => {
     setRelArchetype(null);
     setRelAiLoading(false);
     setRelUserInfo(null);
+    hasDispatchedRelEmailRef.current = false;
   }, []);
 
   const handleRelViewFacts = useCallback(() => setScreen("rel-facts"), []);
@@ -183,6 +184,30 @@ const App = () => {
       generateAndSendPdf();
     }
   }, [aiLoading, aiFacts, userInfo]);
+
+  // Send relationship email once AI finishes
+  const hasDispatchedRelEmailRef = useRef(false);
+  useEffect(() => {
+    if (!relAiLoading && relAiFacts && relAiFacts.length > 0 && relUserInfo?.email && !hasDispatchedRelEmailRef.current) {
+      hasDispatchedRelEmailRef.current = true;
+      fetch("/api/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          assessmentType: "relationship",
+          name: relUserInfo.name,
+          email: relUserInfo.email,
+          score: relScore,
+          relationshipLevel: calculateRelationshipLevel(relScore),
+          archetype: relArchetype,
+          aiFacts: relAiFacts,
+        }),
+      }).catch((err) => {
+        console.error("Failed to send relationship email:", err);
+        hasDispatchedRelEmailRef.current = false;
+      });
+    }
+  }, [relAiLoading, relAiFacts, relUserInfo]);
 
   const handleViewFacts = useCallback(() => setScreen("facts"), []);
 
