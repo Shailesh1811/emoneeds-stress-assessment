@@ -102,7 +102,14 @@ const LoginScreen = ({ onLogin }) => {
         </form>
       </div>
 
-      <p className="mt-6 text-xs text-muted-foreground font-secondary">
+      <button
+        onClick={onLogin}
+        className="mt-4 text-sm text-muted-foreground font-secondary underline underline-offset-2 hover:text-foreground transition"
+      >
+        Skip for now
+      </button>
+
+      <p className="mt-4 text-xs text-muted-foreground font-secondary">
         Powered by emoneeds · Confidential
       </p>
     </div>
