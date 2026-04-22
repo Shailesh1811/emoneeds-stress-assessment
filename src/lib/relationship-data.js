@@ -1,32 +1,13 @@
+const STANDARD_OPTIONS = ["Never", "Almost Never", "Often", "Fairly Often", "Very Often"];
+
 export const relationshipQuestions = [
-  {
-    text: "How often does your partner meet your needs?",
-    options: ["Poorly", "Slightly", "Average", "Well", "Extremely Well"],
-  },
-  {
-    text: "In general, how satisfied are you with your relationship?",
-    options: ["Unsatisfied", "Slightly Satisfied", "Average", "Satisfied", "Extremely Satisfied"],
-  },
-  {
-    text: "How good is your relationship compared to most?",
-    options: ["Poor", "Below Average", "Average", "Good", "Excellent"],
-  },
-  {
-    text: "How often do you wish you hadn't gotten in this relationship?",
-    options: ["Never", "Rarely", "Sometimes", "Often", "Very Often"],
-  },
-  {
-    text: "To what extent has your relationship met your original expectations?",
-    options: ["Hardly at all", "Slightly", "Average", "Mostly", "Completely"],
-  },
-  {
-    text: "How much do you love your partner?",
-    options: ["Not much", "A little", "Average", "A lot", "Very Much"],
-  },
-  {
-    text: "How many problems are there in your relationship?",
-    options: ["Very few", "Few", "Average", "Many", "Very Many"],
-  },
+  { text: "How often does your partner meet your needs?", options: STANDARD_OPTIONS },
+  { text: "In general, how satisfied are you with your relationship?", options: STANDARD_OPTIONS },
+  { text: "How good is your relationship compared to most?", options: STANDARD_OPTIONS },
+  { text: "How often do you wish you hadn't gotten in this relationship?", options: STANDARD_OPTIONS },
+  { text: "To what extent has your relationship met your original expectations?", options: STANDARD_OPTIONS },
+  { text: "How much do you love your partner?", options: STANDARD_OPTIONS },
+  { text: "How many problems are there in your relationship?", options: STANDARD_OPTIONS },
 ];
 
 // Q4 (index 3) and Q7 (index 6) are reverse-scored per RAS standard
