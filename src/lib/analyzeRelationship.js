@@ -37,22 +37,24 @@ export async function analyzeRelationship(answers) {
 
   const levelLabel = { low: "Low Satisfaction (7–14)", average: "Average Satisfaction (15–21)", high: "High Satisfaction (22–35)" }[level];
 
-  const prompt = `You are an expert relationship psychologist and couples therapist with 20 years of experience.
-Analyze the RAS (Relationship Assessment Scale) data for this individual.
+  const prompt = `You are a warm, caring relationship counselor who helps everyday people understand their relationships better.
+Analyze the RAS (Relationship Assessment Scale) responses for this person.
 
 Total Score: ${score}/35
 Satisfaction Level: ${levelLabel}
 Relationship Archetype: ${archetype}
 Raw RAS Answers (Q1–Q7, scale 1–5): ${answers.join(", ")}
 
-Based strictly on this data, output exactly 3 insightful, empathetic observations about their relationship dynamics and areas to focus on.
+Based on this data, write exactly 3 honest, caring insights about their relationship — what they are experiencing, what they might be feeling, and one gentle area to work on.
 
 STRICT RULES:
-1. Format: Each insight MUST follow exactly this structure — "Category Name: insight description." where Category Name is 2-4 words (e.g. "Emotional Attunement", "Unmet Expectations", "Connection Strength") and the description is one clear sentence of 12-18 words.
-2. Tone: Warm, professional, non-judgmental, and actionable.
-3. FORBIDDEN: Clinical jargon, negative labels, guilt-inducing language.
-4. Address the individual directly as "You".
-5. Output ONLY the 3 numbered lines. No extra text.`;
+1. Format: Each insight MUST follow exactly this structure — "Category Name: insight description." where Category Name is 2-4 simple words (e.g. "Emotional Connection", "Unmet Needs", "Growing Together", "Feeling Heard") and the description is one warm, clear sentence of 12-18 words.
+2. Tone: Gentle, relatable, encouraging — like advice from a trusted friend who happens to be a counselor. NOT corporate or clinical.
+3. Language: Use everyday words that any person can understand. Avoid therapy jargon.
+4. FORBIDDEN WORDS: "bandwidth", "operational", "executive", "strategic", "CEO", "boardroom", "corporate", "performance metrics".
+5. PREFERRED CONCEPTS: emotional closeness, feeling loved, communication, trust, understanding each other, personal growth, effort, connection, support.
+6. Address the person directly as "You".
+7. Output ONLY the 3 numbered lines. No extra text.`;
 
   try {
     const text = await callGroqWithRetry(prompt);
