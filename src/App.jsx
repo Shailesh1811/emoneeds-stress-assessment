@@ -1,4 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
+import LoginScreen from "./components/LoginScreen.jsx";
+import AssessmentMenuScreen from "./components/AssessmentMenuScreen.jsx";
 import WelcomeScreen from "./components/WelcomeScreen.jsx";
 import WhoWeAreScreen from "./components/WhoWeAreScreen.jsx";
 import StatsScreen from "./components/StatsScreen.jsx";
@@ -14,7 +16,8 @@ import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
 const App = () => {
-  const [screen, setScreen] = useState("welcome");
+  const [screen, setScreen] = useState("login");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [pendingAnswers, setPendingAnswers] = useState(null);
   const [totalScore, setTotalScore] = useState(0);
   const [aiFacts, setAiFacts] = useState(null);
@@ -24,6 +27,12 @@ const App = () => {
 
   const pdfRef = useRef(null);
   const hasDispatchedEmailRef = useRef(false);
+
+  const handleLogin = () => { setIsLoggedIn(true); setScreen("menu"); };
+  const handleLogout = () => { setIsLoggedIn(false); setScreen("login"); };
+  const handleSelectAssessment = (id) => {
+    if (id === "stress") setScreen("questions");
+  };
 
   const handleStart = () => setScreen("questions");
 
@@ -126,7 +135,7 @@ const App = () => {
   const handleViewFacts = useCallback(() => setScreen("facts"), []);
 
   const handleRestart = useCallback(() => {
-    setScreen("welcome");
+    setScreen("menu");
     setPendingAnswers(null);
     setTotalScore(0);
     setAiFacts(null);
@@ -137,6 +146,8 @@ const App = () => {
 
   return (
     <div className="min-h-screen w-screen">
+      {screen === "login" && <LoginScreen onLogin={handleLogin} />}
+      {screen === "menu" && <AssessmentMenuScreen onSelectAssessment={handleSelectAssessment} onLogout={handleLogout} />}
       {screen === "welcome" && <WelcomeScreen onStart={handleStart} />}
       {screen === "questions" && <QuestionScreen onComplete={handleAssessmentComplete} onBack={() => setScreen("welcome")} />}
       {screen === "lead" && <LeadCaptureScreen onSubmit={handleLeadSubmit} onBack={() => setScreen("questions")} />}
@@ -160,7 +171,7 @@ const App = () => {
         />
       )}
       {screen === "whoweare" && (
-        <WhoWeAreScreen onRestart={handleRestart} />
+        <WhoWeAreScreen onRestart={handleRestart} onBackToMenu={() => setScreen("menu")} />
       )}
 
       {/* Invisible PDF Report Container */}
