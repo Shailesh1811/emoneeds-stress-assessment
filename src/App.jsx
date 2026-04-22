@@ -20,7 +20,7 @@ import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
 const App = () => {
-  const [screen, setScreen] = useState("login");
+  const [screen, setScreen] = useState("menu");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [pendingAnswers, setPendingAnswers] = useState(null);
   const [totalScore, setTotalScore] = useState(0);

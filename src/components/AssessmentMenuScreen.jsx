@@ -117,7 +117,7 @@ const AssessmentMenuScreen = ({ onSelectAssessment, onLogout }) => {
 
       {/* Footer */}
       <p className="text-center text-xs text-muted-foreground font-secondary pb-2">
-        All assessments are confidential and powered by emoneeds AI.
+        All assessments are confidential and powered by emoneeds.
       </p>
     </div>
   );
