@@ -56,12 +56,9 @@ const AssessmentMenuScreen = ({ onSelectAssessment, onLogout }) => {
 
       {/* Title */}
       <div className="text-center animate-fade-in">
-        <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-foreground mb-3">
+        <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-foreground">
           Choose an Assessment
         </h1>
-        <p className="text-sm sm:text-base text-muted-foreground font-secondary max-w-lg mx-auto">
-          Select the assessment you'd like to take. Each is designed to give you actionable insights into your mental wellness.
-        </p>
       </div>
 
       {/* Assessment Cards */}
@@ -100,8 +97,7 @@ const AssessmentMenuScreen = ({ onSelectAssessment, onLogout }) => {
 
               {/* Text */}
               <div className="flex-1">
-                <h3 className="text-base sm:text-lg font-extrabold text-foreground mb-1.5">{item.title}</h3>
-                <p className="text-xs sm:text-sm text-muted-foreground font-secondary leading-relaxed">{item.description}</p>
+                <h3 className="text-base sm:text-lg font-extrabold text-foreground">{item.title}</h3>
               </div>
 
               {/* Arrow (only if available) */}
@@ -115,10 +111,6 @@ const AssessmentMenuScreen = ({ onSelectAssessment, onLogout }) => {
         })}
       </div>
 
-      {/* Footer */}
-      <p className="text-center text-xs text-muted-foreground font-secondary pb-2">
-        All assessments are confidential and powered by emoneeds.
-      </p>
     </div>
   );
 };
