@@ -20,7 +20,7 @@ import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
 const App = () => {
-  const [screen, setScreen] = useState("menu");
+  const [screen, setScreen] = useState("welcome");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [pendingAnswers, setPendingAnswers] = useState(null);
   const [totalScore, setTotalScore] = useState(0);
@@ -75,7 +75,7 @@ const App = () => {
   }, [relAnswers]);
 
   const handleRelRestart = useCallback(() => {
-    setScreen("menu");
+    setScreen("welcome");
     setRelAnswers(null);
     setRelScore(0);
     setRelAiFacts(null);
@@ -87,7 +87,7 @@ const App = () => {
 
   const handleRelViewFacts = useCallback(() => setScreen("rel-facts"), []);
 
-  const handleStart = () => setScreen("questions");
+  const handleStart = () => setScreen("menu");
 
   const handleAssessmentComplete = useCallback((answers) => {
     setPendingAnswers(answers);
@@ -212,7 +212,7 @@ const App = () => {
   const handleViewFacts = useCallback(() => setScreen("facts"), []);
 
   const handleRestart = useCallback(() => {
-    setScreen("menu");
+    setScreen("welcome");
     setPendingAnswers(null);
     setTotalScore(0);
     setAiFacts(null);
